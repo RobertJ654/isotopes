@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="text-2xl font-bold text-center mb-6">Real-Time Monitoring</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-semibold mb-4">Live Reading</h2>
+            <p class="text-lg">Current CPM: {{ measurements[0].cpm if measurements else 'N/A' }}</p>
+            <p class="text-sm text-gray-600">Timestamp: {{ measurements[0].timestamp if measurements else 'N/A' }}</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-semibold mb-4">Historical Data</h2>
+            <canvas id="historyChart" height="100"></canvas>
+            <p class="mt-4 text-lg">Daily Average: {{ daily_avg|round(2) }} CPM</p>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script>
+        const cpmData = [{% for m in measurements %}{{ m.cpm }},{% endfor %}];
+        const labels = [{% for m in measurements %}"{{ m.timestamp }}",{% endfor %}];
+        updateHistoryChart(cpmData, labels);
+    </script>
+{% endblock %}

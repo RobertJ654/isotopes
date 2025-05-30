@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="text-2xl font-bold text-center mb-6">Patient Information</h1>
+    {% if patient %}
+        <div class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-semibold mb-4">General Data</h2>
+            <p>Name: {{ patient.name }}</p>
+            <p>Treatment Date: {{ patient.treatment_date }}</p>
+            <p>Iodine-131 Dose: {{ patient.iodine_dose }} mCi</p>
+            <p>Cumulative Exposure: {{ patient.cumulative_exposure }} CPM</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow mt-6">
+            <h2 class="text-xl font-semibold mb-4">Isolation Recommendations</h2>
+            <p>Isolation Duration: {{ isolation_days }} days</p>
+            <ul class="list-disc pl-6">
+                <li>Avoid close contact with family, especially children and pregnant women.</li>
+                <li>Sleep in a separate room.</li>
+                <li>Use separate utensils and wash them thoroughly.</li>
+                <li>Limit time in public spaces.</li>
+            </ul>
+        </div>
+    {% else %}
+        <div class="bg-white p-4 rounded shadow text-center">
+            <p class="text-lg text-gray-700 mb-4">No patient registered. Please add a new patient to get started.</p>
+            {# Aquí podrías añadir un formulario para crear un paciente o un enlace a una ruta de creación #}
+            <a href="#" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Add New Patient (Placeholder)</a>
+            {# En una aplicación real, este enlace podría ir a una ruta como url_for('main.create_patient') #}
+        </div>
+    {% endif %}
+{% endblock %}

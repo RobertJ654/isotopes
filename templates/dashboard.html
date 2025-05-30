@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="text-2xl font-bold text-center mb-6">Radiation Monitoring Dashboard</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-semibold mb-4">Real-Time Radiation</h2>
+            <canvas id="radiationChart" height="100"></canvas>
+            <p class="mt-4 text-lg">Current CPM: {{ cpm }}</p>
+            <p class="text-lg">Status: {{ status_icon }} {{ status|capitalize }}</p>
+            <p class="text-sm text-gray-600">Last Update: {{ latest.timestamp if latest else 'N/A' }}</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-semibold mb-4">Patient Summary</h2>
+            <p>Name: {{ patient.name }}</p>
+            <p>Treatment Date: {{ patient.treatment_date }}</p>
+            <p>Iodine-131 Dose: {{ patient.iodine_dose }} mCi</p>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script>
+        updateRadiationChart({{ cpm }});
+    </script>
+{% endblock %}

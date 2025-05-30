@@ -1,0 +1,42 @@
+ {% extends 'base.html' %}
+{% block content %}
+    <h1 class="text-2xl font-bold text-center mb-6">Settings</h1>
+    <form method="POST" class="bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-semibold mb-4">Wi-Fi Configuration</h2>
+        <div class="mb-4">
+            <label class="block text-gray-700">SSID</label>
+            <input type="text" name="ssid" value="{{ settings.wifi_ssid or '' }}" class="w-full p-2 border rounded">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700">Password</label>
+            <input type="password" name="password" value="{{ settings.wifi_password or '' }}" class="w-full p-2 border rounded">
+        </div>
+        <h2 class="text-xl font-semibold mb-4">Alert Thresholds</h2>
+        <div class="mb-4">
+            <label class="block text-gray-700">Moderate Alert (CPM)</label>
+            <input type="number" name="moderate" value="{{ settings.alert_threshold_moderate }}" class="w-full p-2 border rounded">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700">Critical Alert (CPM)</label>
+            <input type="number" name="critical" value="{{ settings.alert_threshold_critical }}" class="w-full p-2 border rounded">
+        </div>
+        <h2 class="text-xl font-semibold mb-4">Notifications</h2>
+        <div class="mb-4">
+            <label class="block text-gray-700">Enable Notifications</label>
+            <input type="checkbox" name="notifications" {% if settings.notifications_enabled %}checked{% endif %}>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700">Notification Type</label>
+            <select name="notification_type" class="w-full p-2 border rounded">
+                <option value="email" {% if settings.notification_type == 'email' %}selected{% endif %}>Email</option>
+                <option value="sms" {% if settings.notification_type == 'sms' %}selected{% endif %}>SMS</option>
+                <option value="push" {% if settings.notification_type == 'push' %}selected{% endif %}>Push</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700">Measurement Frequency (minutes)</label>
+            <input type="number" name="frequency" value="{{ settings.measurement_frequency }}" class="w-full p-2 border rounded">
+        </div>
+        <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Save</button>
+    </form>
+{% endblock %}

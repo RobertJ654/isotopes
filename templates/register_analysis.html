@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="text-2xl font-bold text-center mb-6">Register & Analysis</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-semibold mb-4">Data Trends</h2>
+            <canvas id="trendChart" height="100"></canvas>
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+            <h2 class="text-xl font-semibold mb-4">Export Data</h2>
+            <p>Download historical radiation data:</p>
+            <a href="{{ url_for('main.export_csv') }}" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Export to CSV</a>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script>
+        const cpmData = [{% for m in measurements %}{{ m.cpm }},{% endfor %}];
+        const labels = [{% for m in measurements %}"{{ m.timestamp }}",{% endfor %}];
+        updateTrendChart(cpmData, labels);
+    </script>
+{% endblock %}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Radiation Monitoring</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <nav class="bg-blue-500 text-white p-4">
+        <ul class="flex space-x-6 justify-center">
+            <li><a href="{{ url_for('main.dashboard') }}" class="hover:underline">Dashboard</a></li>
+            <li><a href="{{ url_for('main.patient_info') }}" class="hover:underline">Patient Info</a></li>
+            <li><a href="{{ url_for('main.monitoring') }}" class="hover:underline">Monitoring</a></li>
+            <li><a href="{{ url_for('main.settings') }}" class="hover:underline">Settings</a></li>
+            <li><a href="{{ url_for('main.alerts') }}" class="hover:underline">Alerts</a></li>
+            <li><a href="{{ url_for('main.register_analysis') }}" class="hover:underline">Register & Analysis</a></li>
+            </ul>
+    </nav>
+    <div class="container mx-auto p-6">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
