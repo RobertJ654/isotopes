@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="h2 mb-4">Registrar Nuevo Paciente</h1>
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Detalles del Paciente</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nombre del Paciente:</label>
+                    <input type="text" class="form-control" id="name" name="name" required placeholder="Ej. Juan Pérez">
+                </div>
+                <div class="mb-3">
+                    <label for="treatment_date" class="form-label">Fecha de Tratamiento (AAAA-MM-DD):</label>
+                    <input type="date" class="form-control" id="treatment_date" name="treatment_date" required>
+                </div>
+                <div class="mb-3">
+                    <label for="iodine_dose" class="form-label">Dosis de Yodo-131 (mCi):</label>
+                    <input type="number" step="0.1" class="form-control" id="iodine_dose" name="iodine_dose" required placeholder="Ej. 150.0">
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-save me-2"></i> Guardar Paciente
+                    </button>
+                    <a href="{{ url_for('main.list_patients') }}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i> Volver a la Lista
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

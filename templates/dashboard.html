@@ -1,23 +1,115 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1 class="text-2xl font-bold text-center mb-6">Radiation Monitoring Dashboard</h1>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white p-4 rounded shadow">
-            <h2 class="text-xl font-semibold mb-4">Real-Time Radiation</h2>
-            <canvas id="radiationChart" height="100"></canvas>
-            <p class="mt-4 text-lg">Current CPM: {{ cpm }}</p>
-            <p class="text-lg">Status: {{ status_icon }} {{ status|capitalize }}</p>
-            <p class="text-sm text-gray-600">Last Update: {{ latest.timestamp if latest else 'N/A' }}</p>
+    <h1 class="h2 mb-4">Panel de Monitoreo General</h1>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+        <div class="col">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Nivel de Radiación Actual</h5>
+                    <div class="d-flex align-items-center justify-content-center my-3">
+                        <img src="https://placehold.co/60x60/FF0000/FFFFFF?text=☢️" alt="Contador Geiger" class="me-3">
+                        <span class="display-4 fw-bold 
+                            {% if status == 'normal' %}text-success{% elif status == 'moderate' %}text-warning{% else %}text-danger{% endif %}">
+                            {{ cpm }}
+                        </span>
+                        <span class="fs-4 text-muted ms-2">CPM</span>
+                    </div>
+                    <p class="fs-5 fw-bold 
+                        {% if status == 'normal' %}text-success{% elif status == 'moderate' %}text-warning{% else %}text-danger{% endif %}">
+                        {{ status_icon }} Estado: {{ status|capitalize }}
+                    </p>
+                    <p class="card-text text-muted small">Última Actualización: {{ latest.timestamp.strftime('%Y-%m-%d %H:%M:%S') if latest else 'N/A' }}</p>
+                </div>
+            </div>
         </div>
-        <div class="bg-white p-4 rounded shadow">
-            <h2 class="text-xl font-semibold mb-4">Patient Summary</h2>
-            <p>Name: {{ patient.name }}</p>
-            <p>Treatment Date: {{ patient.treatment_date }}</p>
-            <p>Iodine-131 Dose: {{ patient.iodine_dose }} mCi</p>
+
+        <div class="col">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Paciente Activo</h5>
+                    <img src="https://placehold.co/80x80/007bff/ffffff?text=👤" alt="Icono de Paciente" class="img-fluid rounded-circle mb-3 border border-primary border-3">
+                    <p class="fs-4 fw-bold text-dark">{{ patient.name if patient else 'No registrado' }}</p>
+                    <p class="card-text text-muted">Dosis: {{ "%.1f"|format(patient.iodine_dose) if patient else 'N/A' }} mCi</p>
+                    <a href="{{ url_for('main.patient_info') }}" class="btn btn-outline-primary btn-sm mt-2">Ver Perfil Completo</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card text-center shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Alertas Recientes</h5>
+                    {% if patient and patient.alerts|length > 0 %}
+                        {% set latest_alert = patient.alerts|sort(attribute='timestamp', reverse=true)|first %}
+                        <p class="fs-5 fw-bold 
+                            {% if latest_alert.level == 'normal' %}text-success{% elif latest_alert.level == 'moderate' %}text-warning{% else %}text-danger{% endif %}">
+                            {{ latest_alert.message }}
+                        </p>
+                        <p class="card-text text-muted small mt-1">{{ latest_alert.timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
+                        <a href="{{ url_for('main.alerts') }}" class="btn btn-outline-danger btn-sm mt-2">Ver Todas las Alertas</a>
+                    {% else %}
+                        <p class="text-muted">No hay alertas recientes.</p>
+                        <a href="{{ url_for('main.alerts') }}" class="btn btn-outline-secondary btn-sm mt-2">Ir a Alertas</a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Tendencia de Radiación (Últimas Mediciones)</h5>
+        </div>
+        <div class="card-body">
+            <canvas id="dashboardTrendChart" style="max-height: 300px;"></canvas>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Consejos de Salud y Seguridad</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><i class="fas fa-tint me-2 text-primary"></i> <strong>Hidratación:</strong> Beba abundante agua para ayudar a su cuerpo a eliminar el yodo radiactivo.</li>
+                        <li class="list-group-item"><i class="fas fa-apple-alt me-2 text-primary"></i> <strong>Alimentos:</strong> Siga una dieta equilibrada y las recomendaciones de su médico.</li>
+                        <li class="list-group-item"><i class="fas fa-walking me-2 text-primary"></i> <strong>Actividad:</strong> Mantenga actividades ligeras; evite el esfuerzo físico excesivo.</li>
+                        <li class="list-group-item"><i class="fas fa-people-arrows me-2 text-primary"></i> <strong>Contacto:</strong> Siga estrictamente las recomendaciones de aislamiento para proteger a sus seres queridos.</li>
+                    </ul>
+                </div>
+                <div class="card-footer text-muted text-center">
+                    <small>Para más detalles, consulte la sección de Paciente o a su especialista.</small>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Recursos Adicionales</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="https://placehold.co/150x150/007bff/ffffff?text=📚" alt="Recursos" class="img-fluid mb-3 rounded">
+                    <p class="card-text">Explore más sobre el monitoreo de radiación y el cuidado post-tratamiento:</p>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-info text-decoration-none hover-underline">Guía de la OIEA sobre seguridad en medicina nuclear</a></li>
+                        <li><a href="#" class="text-info text-decoration-none hover-underline">Preguntas frecuentes sobre Iodo-131</a></li>
+                        <li><a href="#" class="text-info text-decoration-none hover-underline">Contacto con soporte médico</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
     <script>
-        updateRadiationChart({{ cpm }});
+        const cpmDataDashboard = [{% for m in measurements %}{{ m.cpm }},{% endfor %}];
+        const labelsDashboard = [{% for m in measurements %}"{{ m.timestamp.strftime('%H:%M') }}",{% endfor %}];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            createOrUpdateLineChart('dashboardTrendChart', cpmDataDashboard, labelsDashboard, 'Tendencia de CPM', 'CPM', 'rgba(75, 192, 192, 1)');
+        });
     </script>
 {% endblock %}

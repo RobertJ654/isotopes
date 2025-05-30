@@ -1,42 +1,60 @@
- {% extends 'base.html' %}
+{% extends 'base.html' %}
 {% block content %}
-    <h1 class="text-2xl font-bold text-center mb-6">Settings</h1>
-    <form method="POST" class="bg-white p-4 rounded shadow">
-        <h2 class="text-xl font-semibold mb-4">Wi-Fi Configuration</h2>
-        <div class="mb-4">
-            <label class="block text-gray-700">SSID</label>
-            <input type="text" name="ssid" value="{{ settings.wifi_ssid or '' }}" class="w-full p-2 border rounded">
+    <h1 class="h2 mb-4">Configuración del Sistema</h1>
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Ajustes Generales</h5>
         </div>
-        <div class="mb-4">
-            <label class="block text-gray-700">Password</label>
-            <input type="password" name="password" value="{{ settings.wifi_password or '' }}" class="w-full p-2 border rounded">
+        <div class="card-body">
+            <form method="POST">
+                <h6 class="mb-3 text-muted">Conectividad Wi-Fi</h6>
+                <div class="mb-3">
+                    <label for="ssid" class="form-label">Nombre de red (SSID):</label>
+                    <input type="text" class="form-control" id="ssid" name="ssid" value="{{ settings.wifi_ssid if settings else '' }}" placeholder="Tu_Red_WiFi">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña de Wi-Fi:</label>
+                    <input type="password" class="form-control" id="password" name="password" value="{{ settings.wifi_password if settings else '' }}" placeholder="Tu_Contraseña">
+                </div>
+
+                <h6 class="mb-3 text-muted pt-4 border-top">Alertas y Notificaciones</h6>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="moderate" class="form-label">Umbral Moderado (CPM):</label>
+                        <input type="number" step="0.1" class="form-control" id="moderate" name="moderate" value="{{ settings.alert_threshold_moderate if settings else 30.0 }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="critical" class="form-label">Umbral Crítico (CPM):</label>
+                        <input type="number" step="0.1" class="form-control" id="critical" name="critical" value="{{ settings.alert_threshold_critical if settings else 80.0 }}" required>
+                    </div>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="notifications" name="notifications" value="1" {% if settings and settings.notifications_enabled %}checked{% endif %}>
+                    <label class="form-check-label" for="notifications">
+                        Habilitar Notificaciones
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label for="notification_type" class="form-label">Tipo de Notificación:</label>
+                    <select class="form-select" id="notification_type" name="notification_type">
+                        <option value="Email" {% if settings and settings.notification_type == 'Email' %}selected{% endif %}>Correo Electrónico</option>
+                        <option value="SMS" {% if settings and settings.notification_type == 'SMS' %}selected{% endif %}>SMS (futuro)</option>
+                        <option value="App" {% if settings and settings.notification_type == 'App' %}selected{% endif %}>Notificación en App (futuro)</option>
+                    </select>
+                </div>
+
+                <h6 class="mb-3 text-muted pt-4 border-top">Frecuencia de Medición</h6>
+                <div class="mb-3">
+                    <label for="frequency" class="form-label">Frecuencia de Medición (segundos):</label>
+                    <input type="number" class="form-control" id="frequency" name="frequency" value="{{ settings.measurement_frequency if settings else 60 }}" required placeholder="Ej. 60 (cada minuto)">
+                </div>
+                
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-save me-2"></i> Guardar Configuración
+                    </button>
+                </div>
+            </form>
         </div>
-        <h2 class="text-xl font-semibold mb-4">Alert Thresholds</h2>
-        <div class="mb-4">
-            <label class="block text-gray-700">Moderate Alert (CPM)</label>
-            <input type="number" name="moderate" value="{{ settings.alert_threshold_moderate }}" class="w-full p-2 border rounded">
-        </div>
-        <div class="mb-4">
-            <label class="block text-gray-700">Critical Alert (CPM)</label>
-            <input type="number" name="critical" value="{{ settings.alert_threshold_critical }}" class="w-full p-2 border rounded">
-        </div>
-        <h2 class="text-xl font-semibold mb-4">Notifications</h2>
-        <div class="mb-4">
-            <label class="block text-gray-700">Enable Notifications</label>
-            <input type="checkbox" name="notifications" {% if settings.notifications_enabled %}checked{% endif %}>
-        </div>
-        <div class="mb-4">
-            <label class="block text-gray-700">Notification Type</label>
-            <select name="notification_type" class="w-full p-2 border rounded">
-                <option value="email" {% if settings.notification_type == 'email' %}selected{% endif %}>Email</option>
-                <option value="sms" {% if settings.notification_type == 'sms' %}selected{% endif %}>SMS</option>
-                <option value="push" {% if settings.notification_type == 'push' %}selected{% endif %}>Push</option>
-            </select>
-        </div>
-        <div class="mb-4">
-            <label class="block text-gray-700">Measurement Frequency (minutes)</label>
-            <input type="number" name="frequency" value="{{ settings.measurement_frequency }}" class="w-full p-2 border rounded">
-        </div>
-        <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Save</button>
-    </form>
+    </div>
 {% endblock %}

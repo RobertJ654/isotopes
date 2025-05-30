@@ -1,6 +1,11 @@
+/* Este archivo debería ser generado por Tailwind CSS */
+/* Usualmente, tendrías un archivo input.css que luce así: */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Puedes añadir estilos CSS personalizados aquí si es necesario */
 body {
-    font-family: 'Arial', sans-serif;
-}
-.shadow {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', sans-serif;
 }

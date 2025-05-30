@@ -1,0 +1,21 @@
+{
+  "name": "isotopes",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RobertJ654/isotopes.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RobertJ654/isotopes/issues"
+  },
+  "homepage": "https://github.com/RobertJ654/isotopes#readme",
+  "devDependencies": {},
+  "description": ""
+}

@@ -1,22 +1,59 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1 class="text-2xl font-bold text-center mb-6">Alerts & Safety</h1>
-    <div class="bg-white p-4 rounded shadow">
-        <h2 class="text-xl font-semibold mb-4">Alert History</h2>
-        <ul class="list-disc pl-6">
-            {% for alert in alerts %}
-                <li>{{ alert.timestamp }} - {{ alert.level|capitalize }} ({{ alert.cpm }} CPM): {{ alert.message }}</li>
-            {% endfor %}
-        </ul>
+    <h1 class="h2 mb-4">Historial de Alertas y Recomendaciones</h1>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0">Notificaciones de Alerta</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Fecha y Hora</th>
+                            <th>Nivel</th>
+                            <th>CPM</th>
+                            <th>Mensaje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for alert in alerts %}
+                        <tr>
+                            <td>{{ alert.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td class="fw-bold 
+                                {% if alert.level == 'normal' %}text-success{% elif alert.level == 'moderate' %}text-warning{% else %}text-danger{% endif %}">
+                                {{ alert.level|capitalize }}
+                            </td>
+                            <td>{{ alert.cpm }}</td>
+                            <td>{{ alert.message }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">No hay alertas registradas todavía.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+
     {% if recommendations %}
-        <div class="bg-white p-4 rounded shadow mt-6">
-            <h2 class="text-xl font-semibold mb-4">Safety Recommendations</h2>
-            <ul class="list-disc pl-6">
+    <div class="card shadow-sm border-info">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i> Recomendaciones para el Nivel Actual</h5>
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
                 {% for rec in recommendations %}
-                    <li>{{ rec }}</li>
+                    <li class="list-group-item"><i class="fas fa-check-circle me-2 text-success"></i> {{ rec }}</li>
                 {% endfor %}
             </ul>
+            <div class="text-center mt-4">
+                <img src="https://placehold.co/200x150/007bff/ffffff?text=💡" alt="Consejos de Salud" class="img-fluid rounded">
+            </div>
         </div>
+    </div>
     {% endif %}
 {% endblock %}

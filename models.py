@@ -1,4 +1,4 @@
-from extensions import db # Importa db desde extensions.py
+from extensions import db
 from datetime import datetime
 
 class Patient(db.Model):
@@ -6,7 +6,12 @@ class Patient(db.Model):
     name = db.Column(db.String(100), nullable=False)
     treatment_date = db.Column(db.Date, nullable=False)
     iodine_dose = db.Column(db.Float, nullable=False)   # in mCi
-    cumulative_exposure = db.Column(db.Float, default=0.0)
+    cumulative_exposure = db.Column(db.Float, default=0.0) # Asegurado el valor por defecto
+
+    # Relación con Mediciones y Alertas
+    measurements = db.relationship('Measurement', backref='patient', lazy=True)
+    alerts = db.relationship('Alert', backref='patient', lazy=True)
+    settings = db.relationship('Settings', backref='patient', uselist=False, lazy=True) # Un paciente tiene una configuración
 
 class Measurement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,4 +36,4 @@ class Settings(db.Model):
     notifications_enabled = db.Column(db.Boolean, default=True)
     notification_type = db.Column(db.String(50), default='email')   # 'email', 'sms', 'push'
     measurement_frequency = db.Column(db.Integer, default=5)   # in minutes
-    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'), nullable=False)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'), nullable=False, unique=True) # Un paciente solo tiene 1 entrada de configuración

@@ -1,30 +1,55 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1 class="text-2xl font-bold text-center mb-6">Patient Information</h1>
+    <h1 class="h2 mb-4">Información del Paciente</h1>
+
     {% if patient %}
-        <div class="bg-white p-4 rounded shadow">
-            <h2 class="text-xl font-semibold mb-4">General Data</h2>
-            <p>Name: {{ patient.name }}</p>
-            <p>Treatment Date: {{ patient.treatment_date }}</p>
-            <p>Iodine-131 Dose: {{ patient.iodine_dose }} mCi</p>
-            <p>Cumulative Exposure: {{ patient.cumulative_exposure }} CPM</p>
-        </div>
-        <div class="bg-white p-4 rounded shadow mt-6">
-            <h2 class="text-xl font-semibold mb-4">Isolation Recommendations</h2>
-            <p>Isolation Duration: {{ isolation_days }} days</p>
-            <ul class="list-disc pl-6">
-                <li>Avoid close contact with family, especially children and pregnant women.</li>
-                <li>Sleep in a separate room.</li>
-                <li>Use separate utensils and wash them thoroughly.</li>
-                <li>Limit time in public spaces.</li>
-            </ul>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center h-100">
+                    <div class="card-body">
+                        <img src="https://placehold.co/120x120/007bff/ffffff?text=👨‍⚕️" alt="Avatar del Paciente" class="img-fluid rounded-circle mb-3 border border-primary border-3">
+                        <h5 class="card-title">{{ patient.name }}</h5>
+                        <p class="card-text text-muted">ID: {{ patient.id }}</p>
+                        <hr>
+                        <p class="card-text"><strong>Dosis de Yodo-131:</strong> {{ "%.1f"|format(patient.iodine_dose) }} mCi</p>
+                        <p class="card-text"><strong>Fecha de Tratamiento:</strong> {{ patient.treatment_date.strftime('%Y-%m-%d') }}</p>
+                        <p class="card-text"><strong>Exposición Acumulada:</strong> {{ "%.2f"|format(patient.cumulative_exposure) }} CPM</p>
+                        <a href="{{ url_for('main.monitoring') }}" class="btn btn-primary mt-3"><i class="fas fa-chart-line me-2"></i> Ver Monitoreo</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Recomendaciones de Aislamiento</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Basado en la dosis de Iodo-131 de {{ patient.iodine_dose }} mCi, se recomienda un período de aislamiento de <strong class="text-info">{{ isolation_days }} días</strong> después de la fecha de tratamiento ({{ patient.treatment_date.strftime('%Y-%m-%d') }}).</p>
+                        <ul class="list-group list-group-flush mt-3">
+                            <li class="list-group-item"><i class="fas fa-people-arrows me-2 text-primary"></i> Mantener una distancia segura de al menos 2 metros con otras personas, especialmente niños y mujeres embarazadas.</li>
+                            <li class="list-group-item"><i class="fas fa-bed me-2 text-primary"></i> Dormir en una habitación separada.</li>
+                            <li class="list-group-item"><i class="fas fa-utensils me-2 text-primary"></i> Usar utensilios y toallas separados; lavarlos cuidadosamente después de cada uso.</li>
+                            <li class="list-group-item"><i class="fas fa-hand-holding-water me-2 text-primary"></i> Lavarse las manos frecuentemente con agua y jabón, especialmente después de ir al baño.</li>
+                            <li class="list-group-item"><i class="fas fa-tshirt me-2 text-primary"></i> Lavar la ropa de cama y personal por separado.</li>
+                            <li class="list-group-item"><i class="fas fa-trash-alt me-2 text-primary"></i> Desechar la basura en bolsas selladas.</li>
+                            <li class="list-group-item"><i class="fas fa-paw me-2 text-primary"></i> Limitar las visitas y el contacto con mascotas.</li>
+                        </ul>
+                        <div class="alert alert-warning mt-4" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Importante:</strong> Estas son recomendaciones generales. Siga siempre las instrucciones específicas de su médico.
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     {% else %}
-        <div class="bg-white p-4 rounded shadow text-center">
-            <p class="text-lg text-gray-700 mb-4">No patient registered. Please add a new patient to get started.</p>
-            {# Aquí podrías añadir un formulario para crear un paciente o un enlace a una ruta de creación #}
-            <a href="#" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Add New Patient (Placeholder)</a>
-            {# En una aplicación real, este enlace podría ir a una ruta como url_for('main.create_patient') #}
+        <div class="alert alert-info text-center" role="alert">
+            <h4 class="alert-heading">¡No hay paciente registrado!</h4>
+            <p>Para comenzar a monitorear la radiación y ver las recomendaciones, por favor, agrega un nuevo paciente.</p>
+            <hr>
+            <a href="{{ url_for('main.add_patient') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-plus-circle me-2"></i> Añadir Nuevo Paciente
+            </a>
         </div>
     {% endif %}
 {% endblock %}
